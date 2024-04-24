@@ -1,5 +1,8 @@
 build/
 dist/
+/myenv
+/data
+
 *.egg-info/
 *.egg
 *.py[cod]
