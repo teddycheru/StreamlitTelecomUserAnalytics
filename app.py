@@ -2,10 +2,6 @@ import streamlit as st
 from sqlalchemy import create_engine
 import pandas as pd
 import matplotlib.pyplot as plt
-import seaborn as sns
-
-# Load custom theme
-st.set_page_config(layout="wide")
 
 def connect_to_database():
     database_name = 'telecom'
@@ -34,32 +30,35 @@ def fetch_data_and_plot():
     LIMIT 10;
     """
     df_top10_handsets = pd.read_sql(sql_query, con=engine)
-    st.write(df_top10_handsets)
 
     # Prepare the DataFrame for plotting
     df_top10_handsets['Handset'] = df_top10_handsets['Handset Manufacturer'] + ' ' + df_top10_handsets['Handset Type']
 
-    # Set the size of the figure
-    plt.figure(figsize=(12, 8))
-    sns.set(style="whitegrid")
+    # Display the table in the first row
+    st.write(df_top10_handsets)
 
-    # Create a horizontal bar plot
-    plt.barh(df_top10_handsets['Handset'], df_top10_handsets['Count'], color='skyblue')
+    # Create a layout with 2 columns for the second row
+    col1, col2 = st.columns(2)
 
-    # Set the title and axis labels for the plot
-    plt.title('Top 10 Handsets Used by Customers', fontsize=18, fontweight='bold')
-    plt.xlabel('Count', fontsize=14)
-    plt.ylabel('Handset Manufacturer and Type', fontsize=14)
+    # Create a horizontal bar plot in the first column of the second row
+    with col1:
+        plt.figure(figsize=(10, 6))
+        plt.barh(df_top10_handsets['Handset'], df_top10_handsets['Count'], color='skyblue')
+        plt.title('Top 10 Handsets Used by Customers')
+        plt.xlabel('Count')
+        plt.ylabel('Handset Manufacturer and Type')
+        plt.yticks(rotation=0)
+        st.pyplot(plt.gcf())
 
-    # Rotate the y-axis labels if needed
-    plt.yticks(rotation=0, fontsize=12)
-
-    # Display the plot
-    st.pyplot(plt.gcf())
+    # Create a pie chart in the second column of the second row
+    with col2:
+        plt.figure(figsize=(10, 6))
+        plt.pie(df_top10_handsets['Count'], labels=df_top10_handsets['Handset'], autopct='%1.1f%%', startangle=140)
+        plt.title('Top 10 Handsets Used by Customers (Pie Chart)')
+        st.pyplot(plt.gcf())
 
 def main():
-    # Use Markdown for the title with custom font size
-    st.markdown("<h1 style='text-align: center; color: black;'>Telecom Data Dashboard</h1>", unsafe_allow_html=True)
+    st.title('Telecom Data Dashboard')
     fetch_data_and_plot()
 
 if __name__ == "__main__":
