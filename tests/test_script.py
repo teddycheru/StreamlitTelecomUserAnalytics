@@ -36,6 +36,17 @@ class TestCountOccurence(unittest.TestCase):
         Provide an assertion level for arg input
         """
         self.assertRaises(TypeError, count_occurence, True)
+    
+class TestCases(unittest.TestCase):
+    # Existing test functions...
+
+    def test_find_average_empty_list(self):
+        """
+        Test that find_average returns None when given an empty list
+        """
+        data = []
+        result = find_average(data)
+        self.assertIsNone(result)
 
 if __name__ == '__main__':
     unittest.main()
